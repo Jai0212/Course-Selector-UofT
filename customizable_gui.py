@@ -3,7 +3,7 @@
 import tkinter as tk
 from tkinter import *
 from PIL import Image, ImageTk
-from initializer import CourseOrVertex, _Vertex
+from initializer import CourseOrVertex, _Vertex, CourseAndVertex
 from selector import CourseSelector, generate_graph_from_file, course_in_list
 from programclasses import get_programs_list, get_program
 from selector import get_credits_year, verify_breadth_req, get_breadth_req
@@ -425,6 +425,40 @@ def initialize_new_window(interests: list, courses: list, p: list) -> None:
             after_j = j
 
             if isinstance(courses[i][j], CourseOrVertex):
+
+                chk = False
+
+                for k in courses[i][j].neighbours:
+
+                    if isinstance(courses[i][j].neighbours[k], CourseAndVertex):
+
+                        chk = True
+
+                        all_course_and_vertices = []
+
+                        course_and_vertex = courses[i][j].neighbours[k].neighbours
+
+                        for m in course_and_vertex:
+
+                            course_code = m
+
+                            final_courses[i][j] = g.get_vertex(course_code)
+
+                            line_buttons[i][j].configure(text=course_code)
+
+                            line_buttons[i][j].place(x=line_button_coordinates[i][j][0],
+                                                     y=line_button_coordinates[i][j][1])
+
+                            all_course_and_vertices.append(course_and_vertex[m])
+
+                            after_j += 1
+                            j += 1
+
+                        j -= 1
+                        break
+
+                if chk:
+                    continue
 
                 line_buttons[i][j].configure(text="Choose")
                 line_buttons[i][j].configure(bg='#D2B48C')
